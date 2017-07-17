@@ -1,0 +1,28 @@
+// This file is part of nand2tetris course provided by Coursera
+// by Robert Wilson.
+// File name: projects/01/Mux.hdl
+
+/** 
+ * Multiplexor:
+ * out = a if sel == 0
+ *       b otherwise
+ */
+
+CHIP Mux {
+    IN a, b, sel;
+    OUT out;
+
+    PARTS: 
+	
+	// Set up sel==0
+	Not(in=sel, out=notsel);
+	
+	// If a==1 and sel==1 out=a
+	And(a=a, b=notsel, out=aout);
+	
+	// If b==1 and sel==0 out=b
+	And(a=sel, b=b, out=bout);
+	
+	// Put them together
+	Or(a=aout, b=bout, out=out);
+}

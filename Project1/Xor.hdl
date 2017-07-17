@@ -1,0 +1,26 @@
+// This file is part of nand2tetris course provided by Coursera
+// by Robert Wilson.
+// File name: projects/01/Xor.hdl
+
+/**
+ * Exclusive-or gate:
+ * out = not (a == b)
+ */
+
+CHIP Xor {
+    IN a, b;
+    OUT out;
+
+    PARTS:
+	
+	// Set up the not gates
+	Not(in=a, out=nota);
+	Not(in=b, out=notb);
+	
+	// Set up Nand gates
+	Nand(a=a, b=b, out=nand);
+	Nand(a=nota, b=notb, out=notnand);
+	
+	// execute And gate
+	And(a=nand, b=notnand, out=out);
+}

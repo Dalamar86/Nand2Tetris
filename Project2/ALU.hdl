@@ -1,0 +1,76 @@
+// This file is part of nand2tetris course provided by Coursera
+// by Robert Wilson.
+// File name: projects/02/ALU.hdl
+
+/**
+ * The ALU (Arithmetic Logic Unit).
+ * Computes one of the following functions:
+ * x+y, x-y, y-x, 0, 1, -1, x, y, -x, -y, !x, !y,
+ * x+1, y+1, x-1, y-1, x&y, x|y on two 16-bit inputs, 
+ * according to 6 input bits denoted zx,nx,zy,ny,f,no.
+ * In addition, the ALU computes two 1-bit outputs:
+ * if the ALU output == 0, zr is set to 1; otherwise zr is set to 0;
+ * if the ALU output < 0, ng is set to 1; otherwise ng is set to 0.
+ */
+
+// Implementation: the ALU logic manipulates the x and y inputs
+// and operates on the resulting values, as follows:
+// if (zx == 1) set x = 0        // 16-bit constant
+// if (nx == 1) set x = !x       // bitwise not
+// if (zy == 1) set y = 0        // 16-bit constant
+// if (ny == 1) set y = !y       // bitwise not
+// if (f == 1)  set out = x + y  // integer 2's complement addition
+// if (f == 0)  set out = x & y  // bitwise and
+// if (no == 1) set out = !out   // bitwise not
+// if (out == 0) set zr = 1
+// if (out < 0) set ng = 1
+
+CHIP ALU {
+    IN  
+        x[16], y[16],  // 16-bit inputs        
+        zx, // zero the x input?
+        nx, // negate the x input?
+        zy, // zero the y input?
+        ny, // negate the y input?
+        f,  // compute out = x + y (if 1) or x & y (if 0)
+        no; // negate the out output?
+
+    OUT 
+        out[16], // 16-bit output
+        zr, // 1 if (out == 0), 0 otherwise
+        ng; // 1 if (out < 0),  0 otherwise
+
+    PARTS:
+   
+   // Set up the not gates for x and y
+   Not16(in=out1, out=notout1);
+   Not16(in=out3, out=notout3);
+   
+   // Selecting x component
+   Mux16(a=x, b[0..15]=false, sel=zx, out=out1);
+   Mux16(a=out1, b=notout1, sel=nx, out=out2);
+   
+   // Selecting y component
+   Mux16(a=y, b[0..15]=false, sel=zy, out=out3);
+   Mux16(a=out3, b=notout3, sel=ny, out=out4);
+   
+   // Set up f gates for x and y
+   Add16(a=out2, b=out4, out=addout);
+   And16(a=out2, b=out4, out=andout);
+   
+   // Selecting f components
+   Mux16(a=andout, b=addout, sel=f, out=out5);
+   
+   // Set up not out gate
+   Not16(in=out5, out=notout5);
+   
+   // Selecting out or not out and negative or not
+   Mux16(a=out5, b=notout5, sel=no, out=out, out[0..7]=out7, out[8..15]=out15, out[15]=ng);
+   
+   
+   // Setting up zr out
+   Or8Way(in=out7, out=out8);
+   Or8Way(in=out15, out=out9);
+   Or(a=out8, b=out9, out=out10);
+   Not(in=out10, out=zr);   
+}

@@ -1,0 +1,25 @@
+// This file is part of nand2tetris course provided by Coursera
+// by Robert Wilson.
+// File name: projects/01/DMux.hdl
+
+/**
+ * Demultiplexor:
+ * {a, b} = {in, 0} if sel == 0
+ *          {0, in} if sel == 1
+ */
+
+CHIP DMux {
+    IN in, sel;
+    OUT a, b;
+
+    PARTS:
+	
+	// First need to set up sel==0 
+	Not(in=sel, out=notsel);
+	
+	// output to a if sel==0
+	And(a=in, b=notsel, out=a);
+	
+	// output to b if sel==1
+	And(a=in, b=sel, out=b);
+}

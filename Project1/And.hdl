@@ -1,0 +1,21 @@
+// This file is part of nand2tetris course provided by Coursera
+// by Robert Wilson.
+// File name: projects/01/And.hdl
+
+/**
+ * And gate: 
+ * out = 1 if (a == 1 and b == 1)
+ *       0 otherwise
+ */
+
+CHIP And {
+    IN a, b;
+    OUT out;
+
+    PARTS:
+	
+	Nand(a=a, b=b, out=nand);
+	
+	// Flip the outputs
+	Not(in=nand, out=out);
+}

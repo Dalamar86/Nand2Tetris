@@ -1,0 +1,37 @@
+// This file is part of nand2tetris course provided by Coursera
+// by Robert Wilson.
+// File name: projects/02/FullAdder.hdl
+
+/**
+ * Computes the sum of three bits.
+ */
+
+CHIP FullAdder {
+    IN a, b, c;  // 1-bit inputs
+    OUT sum,     // Right bit of a + b + c
+        carry;   // Left bit of a + b + c
+
+    PARTS: 
+	
+	// Carry Code
+	And(a=a, b=b, out=ab);
+	And(a=a, b=c, out=ac);
+	And(a=c, b=b, out=bc);
+	Or(a=ab, b=bc, out=orout1);
+	Or(a=ac, b=orout1, out=carry);
+	
+	// Sum Code first half
+	Or(a=c, b=b, out=orout);
+	Nand(a=c, b=b, out=nandout);
+	And(a=orout, b=nandout, out=bcout);
+	And(a=a, b=bcout, out=abc);
+	Not(in=abc, out=notabc);
+	And(a=a, b=notabc, out=sum1);
+	
+	// Sum Code second half
+	Not(in=a, out=nota);
+	And(a=nota, b=bcout, out=sum2);
+	
+	// Sume Code
+	Or(a=sum1, b=sum2, out=sum);
+}

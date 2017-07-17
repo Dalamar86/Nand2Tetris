@@ -1,0 +1,38 @@
+// This file is part of nand2tetris course provided by Coursera
+// by Robert Wilson.
+// File name: projects/01/DMux4Way.hdl
+
+/**
+ * 4-way demultiplexor:
+ * {a, b, c, d} = {in, 0, 0, 0} if sel == 00
+ *                {0, in, 0, 0} if sel == 01
+ *                {0, 0, in, 0} if sel == 10
+ *                {0, 0, 0, in} if sel == 11
+ */
+
+CHIP DMux4Way {
+    IN in, sel[2];
+    OUT a, b, c, d;
+
+    PARTS: 
+	
+	// Set up not gates for sel==0/1
+	Not(in=sel[0], out=notout0);
+	Not(in=sel[1], out=notout1);
+	
+	// Set up a gate
+	And(a=notout0, b=notout1, out=aandout);
+	And(a=in, b=aandout, out=a);
+	
+	// Set up b gate
+	And(a=sel[0], b=notout1, out=bandout);
+	And(a=in, b=bandout, out=b);
+	
+	// Set up c gate
+	And(a=notout0, b=sel[1], out=candout);
+	And(a=in, b=candout, out=c);	
+	
+	// Set up d gate
+	And(a=sel[0], b=sel[1], out=dandout);
+	And(a=in, b=dandout, out=d);
+}

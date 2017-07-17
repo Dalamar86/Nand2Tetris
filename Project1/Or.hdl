@@ -1,0 +1,23 @@
+// This file is part of nand2tetris course provided by Coursera
+// by Robert Wilson.
+// File name: projects/01/Or.hdl
+
+ /**
+ * Or gate:
+ * out = 1 if (a == 1 or b == 1)
+ *       0 otherwise
+ */
+
+CHIP Or {
+    IN a, b;
+    OUT out;
+
+    PARTS:
+	
+	// Execute not gate
+	Not(in=a, out=nota);
+	Not(in=b, out=notb);
+	
+	// Execute Nand gate
+	Nand(a=nota, b=notb, out=out);
+}
